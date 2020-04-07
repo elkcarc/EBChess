@@ -9,20 +9,6 @@ from django.http import HttpResponse
 
 # Create your views here.
 
-def single_slug(request, single_slug):
-    game = -1
-
-    for g in Game.objects.all():
-        if g.game_id == single_slug:
-            game = g
-
-    if game != -1:
-        return render(request=request,
-                      template_name="main/game.html",
-                      context={"game": game})
-    
-    return HttpResponse("Error 404: Resource Not Found")
-
 def homepage(request):
     return render(request=request, 
                   template_name="main/home.html",
@@ -41,7 +27,7 @@ def register(request):
         else:
             for msg in form.error_messages:
                 messages.error(request, f"{msg} : {form.error_messages[msg]}")
-
+                
     form = NewUserForm
     return render(request=request,
                   template_name="main/register.html",
@@ -72,3 +58,25 @@ def login_request(request):
     return render(request=request, 
                   template_name="main/login.html",
                   context={"form":form})
+                  
+def account_request(request):
+    games = []
+    for g in Game.objects.all():
+        if g.game_white == request.user.username or g.game_black == request.user.username:
+            games.append(g)
+    nogamesfound = True
+    if len(games) > 1:
+        nogamesfound = False
+    return render(request=request,
+                  template_name="main/account.html",
+                  context={"games": games,
+                           "nogamesfound" : nogamesfound})
+                  
+def single_slug(request, single_slug):
+    for g in Game.objects.all():
+        if g.game_id == single_slug:
+            game = g
+    if game != -1:
+        return render(request=request,
+                      template_name="main/game.html",
+                      context={"game": game})
