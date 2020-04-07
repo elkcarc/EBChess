@@ -1,0 +1,26 @@
+{% extends "main/header.html" %}
+
+
+{% block content %}
+    <div class="col">
+    </div>
+    <div class="col">
+        <div class="col s12 m6">
+            <div class="card green lighten-3">
+                <div class="card-content white-text">
+                    <span class="card-title"> {{game.game_players}}</span>
+                    <form method="POST">
+                        {% csrf_token %}
+                        {{form.as_p}}
+                        <button class="btn" style="background-color:green; color:white" type="submit">register</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+    </div>
+
+
+    If you have an account, <a href="/login"><strong>login</strong></a> instead.
+{% endblock %}
