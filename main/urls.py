@@ -29,6 +29,7 @@ urlpatterns = [
     path("challenges/decline/<challenge_slug>/", views.challenges_decline, name="challenge_respond"),
     path("challenges/", views.challenges_request, name="challenges"),
     path("active/", views.active_request, name="active"),
+    path("active/<active_slug>/resign", views.active_slug_resign, name="active_resign"),
     path("active/<active_slug>/", views.active_slug, name="active_slug"),
     path("ai/", views.ai_request, name="ai"),
     path("game/<single_slug>/", views.single_slug, name="single_slug"),

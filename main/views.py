@@ -160,6 +160,29 @@ def active_request(request):
                   context={"active": active,
                            "noactivefound" : noactivefound})
 
+def active_slug_resign(request, active_slug):
+    for a in Active.objects.all():
+        if str(a.pk) == str(active_slug):
+            active = a
+    if active != -1 and (request.user.username == active.user1 or request.user.username == active.user2):
+        if request.user.username == active.user1:
+            result = "0-1"
+        else:
+            result = "1-0"
+        new_game_obj = Game(game_event="No Event",
+                            game_site="On-line",
+                            game_published=datetime.now(),
+                            game_round="1",
+                            game_white=active.user1,
+                            game_black=active.user2,
+                            game_result=result,
+                            game_content=active.active_content)
+        new_game_obj.save()
+        messages.info(request, f"Resigned game against {active.user2}")
+        instance = Active.objects.get(active_id=active.active_id)
+        instance.delete()
+        return redirect("main:homepage")
+
 def active_slug(request, active_slug):
     for a in Active.objects.all():
         if str(a.pk) == str(active_slug):
