@@ -6,6 +6,7 @@ from django.contrib import messages
 from .forms import NewUserForm, ChallengeForm
 from django.http import HttpResponse
 from datetime import datetime
+import numpy as np
 
 
 # Create your views here.
@@ -83,6 +84,10 @@ def challenges_issue(request):
         if form.is_valid():
             opponent = form.cleaned_data.get('opponent')
             message = form.cleaned_data.get('message')
+            #commented for testing purposes
+            #if opponent == request.user.username:
+            #    messages.error(request, f"You cannot challenge yourself")
+            #    return redirect("main:homepage")
             new_challenge_obj = Challenge(challenge_user1=request.user.username,
                                           challenge_user2=opponent,
                                           challenge_issued=datetime.now(),
@@ -98,7 +103,36 @@ def challenges_issue(request):
                   template_name="main/issue.html",
                   context={"form":form})
 
+def challenges_accept(request, challenge_slug):
+    for c in Challenge.objects.all():
+        if str(c.pk) == str(challenge_slug):
+            challenge = c
+    if challenge != -1 and request.user.username == challenge.challenge_user2:
+        if np.random.random_sample() > 0.5:
+            new_active_obj = Active(user1=challenge.challenge_user1,
+                                    user2=request.user.username,
+                                    last_move=datetime.now(),
+                                    active_content="")
+        else:
+            new_active_obj = Active(user1=request.user.username,
+                                    user2=challenge.challenge_user1,
+                                    last_move=datetime.now(),
+                                    active_content="")
+        new_active_obj.save()
+        messages.info(request, f"Accepted Challenge from {challenge.challenge_user1}")
+        instance = Challenge.objects.get(challenge_id=challenge.challenge_id)
+        instance.delete()
+        return redirect("main:homepage")
 
+def challenges_decline(request, challenge_slug):
+    for c in Challenge.objects.all():
+        if str(c.pk) == str(challenge_slug):
+            challenge = c
+    if challenge != -1 and request.user.username == challenge.challenge_user2:
+        instance = Challenge.objects.get(challenge_id=challenge.challenge_id)
+        instance.delete()
+        messages.info(request, f"Successflly declined the challenge")
+        return redirect("main:homepage")
 
 def challenges_request(request):
     challenges = []
@@ -125,6 +159,15 @@ def active_request(request):
                   template_name="main/active.html",
                   context={"active": active,
                            "noactivefound" : noactivefound})
+
+def active_slug(request, active_slug):
+    for a in Active.objects.all():
+        if str(a.pk) == str(active_slug):
+            active = a
+    if active != -1:
+        return render(request=request,
+                      template_name="main/activegame.html",
+                      context={"active": active})
 
 def ai_request(request):
     ai = []

@@ -8,10 +8,11 @@
         <div class="col s12 m6">
             <div class="card green lighten-3">
                 <div class="card-content black-text">
+                    <span class="card-title"> {{game.game_players}}</span>
                     <form method="POST">
                         {% csrf_token %}
                         {{form.as_p}}
-                        <button class="btn" style="background-color:green; color:white" type="submit">Challenge</button>
+                        <button class="btn" style="background-color:green; color:white" type="submit">login</button>
                     </form>
                 </div>
             </div>
@@ -19,5 +20,5 @@
     </div>
     <div class="col">
     </div>
-
+    If you don't have an account, <a href="/register"><strong>register</strong></a> instead.
 {% endblock %}

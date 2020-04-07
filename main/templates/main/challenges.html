@@ -10,16 +10,16 @@
         </div>
         {% for challenge in challenges %}
             <div class="col s12 m6">
-                <a href="../{{challenge.challenge_id}}"> <!--create active -->
-                    <div class="card hoverable green lighten-3">
-                        <div class="card-content black-text">
-                            <span class="card-title"> {{challenge.challenge_user1}} vs. {{challenge.challenge_user2}}</span>
-                            <p>{{challenge.challenge_issued}}</p>
-                            <br>
-                            <p>{{challenge.challenge_message|safe}}</p>
-                        </div>
+                <div class="card green lighten-3">
+                    <div class="card-content black-text">
+                        <span class="card-title"> {{challenge.challenge_user1}} vs. {{challenge.challenge_user2}}</span>
+                        <a href="/challenges/accept/{{challenge.challenge_id}}", class="btn-flat btn-large right waves-effect waves-light green lighten-3"><i class="large material-icons">check</i></a>
+                        <a href="/challenges/decline/{{challenge.challenge_id}}", class="btn-flat btn-large right waves-effect waves-light green lighten-3"><i class="large material-icons">cancel</i></a>
+                        <p>{{challenge.challenge_issued}}</p>
+                        <br>
+                        <p>{{challenge.challenge_message|safe}}</p>
                     </div>
-                </a>
+                </div>
             </div>
         {% endfor %}
         <div class="card green lighten-3">

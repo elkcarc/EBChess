@@ -25,8 +25,11 @@ urlpatterns = [
     path("login/", views.login_request, name="login"),
     path("account/", views.account_request, name="account"),
     path("challenges/issue/", views.challenges_issue, name="challenge_issue"),
+    path("challenges/accept/<challenge_slug>/", views.challenges_accept, name="challenge_respond"),
+    path("challenges/decline/<challenge_slug>/", views.challenges_decline, name="challenge_respond"),
     path("challenges/", views.challenges_request, name="challenges"),
     path("active/", views.active_request, name="active"),
+    path("active/<active_slug>/", views.active_slug, name="active_slug"),
     path("ai/", views.ai_request, name="ai"),
     path("game/<single_slug>/", views.single_slug, name="single_slug"),
 ]

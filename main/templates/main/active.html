@@ -10,7 +10,7 @@
         </div>
         {% for a in active %}
             <div class="col s12 m6">
-                <a href="../{{a.active_id}}"> <!--on completion create game -->
+                <a href="/active/{{a.active_id}}/"> <!--on completion create game -->
                     <div class="card hoverable green lighten-3">
                         <div class="card-content black-text">
                             <span class="card-title"> {{a.user1}} vs. {{a.user2}}</span>

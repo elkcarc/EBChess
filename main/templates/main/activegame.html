@@ -1,0 +1,17 @@
+{% extends "main/header.html" %}
+
+
+{% block content %}
+    <div class="col">
+        <div class="col s12 m6">
+            <div class="card green lighten-3">
+                <div class="card-content black-text">
+                    <span class="card-title"> {{active.user1}} vs. {{active.user2}}</span>
+                    <p>{{active.last_move}}</p>
+                    <br>
+                    <p>{{active.active_content|safe}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
