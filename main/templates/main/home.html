@@ -3,6 +3,11 @@
 
 {% block content %}
     <div class="col">
+        <div class="card green">
+            <div class="card-content white-text">
+                <span class="card-title"><strong>Latest Games</strong></span>
+            </div>
+        </div>
         {% for game in games %}
             <div class="col s12 m6">
                 <a href="/{{game.game_id}}">

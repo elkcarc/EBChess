@@ -8,12 +8,38 @@ class Game(models.Model):
     game_site = models.CharField(max_length=200, default="On-line")
     game_published = models.DateTimeField("date played", default=datetime.now())
     game_round = models.CharField(max_length=20, default="1")
-    game_white = models.CharField(max_length=200)
-    game_black = models.CharField(max_length=200)
-    game_result = models.CharField(max_length=20)
-    game_content = models.TextField()
+    game_white = models.CharField(max_length=200, default="Unknown")
+    game_black = models.CharField(max_length=200, default="Unknown")
+    game_result = models.CharField(max_length=20, default="Unknown")
+    game_content = models.TextField(default="Unknown")
 
     def __str__(self):
         return self.game_content
 
 
+class Challenge(models.Model):
+    challenge_id = models.AutoField(primary_key=True)
+    challenge_user1 = models.CharField(max_length=200, default="Not Set")
+    challenge_user2 = models.CharField(max_length=200, default="Not Set")
+    challenge_issued = models.DateTimeField("date issued", default=datetime.now())
+    challenge_message  = models.TextField(default="Unknown")
+
+    def __str__(self):
+        return str(self.challenge_id)
+
+class Active(models.Model):
+    active_id = models.AutoField(primary_key=True)
+    user1 = models.CharField(max_length=200, default="Not Set")
+    user2 = models.CharField(max_length=200, default="Not Set")
+    last_move = models.DateTimeField("last move", default=datetime.now())
+    active_content = models.TextField(default="")
+
+    def __str__(self):
+        return str(self.active_id)
+
+class Ai(models.Model):
+    ai_game_id = models.AutoField(primary_key=True)
+    user = models.CharField(max_length=200, default="Not Set")
+    user_side = models.CharField(max_length=10, default="White")
+    last_move = models.DateTimeField("last move", default=datetime.now())
+    ai_content = models.TextField(default="")

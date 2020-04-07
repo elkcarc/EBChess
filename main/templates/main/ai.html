@@ -1,0 +1,27 @@
+{% extends "main/header.html" %}
+
+
+{% block content %}
+    <div class="col">
+        {% for challenge in challenges %}
+            <div class="col s12 m6">
+                <a href="../{{challenge.challenge_id}}">
+                    <div class="card hoverable green lighten-3">
+                        <div class="card-content black-text">
+                            <span class="card-title"> {{challenge.challenge_user1}} vs. {{challenge.challenge_user2}}</span>
+                            <p>{{challenge.challenge_issued}}</p>
+                            <br>
+                            <p>{{challenge.challenge_message|safe}}</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+        <div class="card hoverable green lighten-3">
+            <div class="card-content black-text">
+                <span class="card-title"> No Other AI Games Found</span>
+                <p> :( </p>
+            </div>
+        </div>
+    </div>
+{% endblock %}s

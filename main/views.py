@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Game
+from .models import Game, Challenge, Active, Ai
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
@@ -10,9 +10,13 @@ from django.http import HttpResponse
 # Create your views here.
 
 def homepage(request):
+    games = []
+    for g in Game.objects.all():
+        games.append(g)
+    games = reversed(games)
     return render(request=request, 
                   template_name="main/home.html",
-                  context={"games": Game.objects.all})
+                  context={"games": games})
 
 def register(request):
     if request.method == "POST":
@@ -71,6 +75,45 @@ def account_request(request):
                   template_name="main/account.html",
                   context={"games": games,
                            "nogamesfound" : nogamesfound})
+
+def challenges_request(request):
+    challenges = []
+    for c in Challenge.objects.all():
+        if c.challenge_user1 == request.user.username or c.challenge_user1 == request.user.username:
+            challenges.append(c)
+    nochallengesfound = True
+    if len(challenges) > 1:
+        nochallengesfound = False
+    return render(request=request,
+                  template_name="main/challenges.html",
+                  context={"challenges": challenges,
+                           "nochallengesfound" : nochallengesfound})
+
+def active_request(request):
+    active = []
+    for a in Active.objects.all():
+        if a.user1 == request.user.username or a.user1 == request.user.username:
+            active.append(a)
+    noactivefound = True
+    if len(active) > 1:
+        noactivefound = False
+    return render(request=request,
+                  template_name="main/active.html",
+                  context={"active": active,
+                           "noactivefound" : noactivefound})
+
+def ai_request(request):
+    ai = []
+    for a in Ai.objects.all():
+        if a.user == request.user.username:
+            ai.append(a)
+    noaifound = True
+    if len(ai) > 1:
+        noaifound = False
+    return render(request=request,
+                  template_name="main/ai.html",
+                  context={"ai": ai,
+                           "noaifound" : noaifound})
                   
 def single_slug(request, single_slug):
     for g in Game.objects.all():
