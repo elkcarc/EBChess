@@ -74,7 +74,7 @@ def account_request(request):
                   
 def single_slug(request, single_slug):
     for g in Game.objects.all():
-        if g.game_id == single_slug:
+        if str(g.pk) == str(single_slug):
             game = g
     if game != -1:
         return render(request=request,

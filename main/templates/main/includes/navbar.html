@@ -1,17 +1,46 @@
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 
 <nav>
-    <div class="nav-wrapper" style="background-color:green; color:white">
-        <a href="/" class="brand-logo left">EBChess</a>
-        <ul id="nav-mobile" class="right">
-            <li><a href="/">Home</a></li>
-            {% if user.is_authenticated %}
-                <li><a href="/account">{{user.username}}</a></li>
-                <li><a href="/logout">Logout</a></li>
-            {% else %}
-                <li><a href="/register">Register</a></li>
-                <li><a href="/login">Login</a></li>
-            {% endif %}
-        </ul>
+    <div class="nav-wrapper green">
+        <div class="w3-container" padding-left: 80px;>
+            <a href="./" class="brand-logo">EBChess</a>
+            <a href="#" data-target="mobile-nav" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+            <ul class="right hide-on-med-and-down">
+                <li><a href="/">Home</a></li>
+                <li><a href="/challenges">Challenges</a></li>
+                <li><a href="/active">Active Games</a></li>
+                <li><a href="/ai">Play AI</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="/account">{{user.username}}</a></li>
+                    <li><a href="/logout">Logout</a></li>
+                {% else %}
+                    <li><a href="/register">Register</a></li>
+                    <li><a href="/login">Login</a></li>
+                {% endif %}
+            </ul>
+        </div>
     </div>
 </nav>
+
+<ul class="sidenav" id="mobile-nav">
+    <li><a href="/">Home</a></li>
+    <li><a href="/challenges">Challenges</a></li>
+    <li><a href="/active">Active Games</a></li>
+    <li><a href="/ai">Play AI</a></li>
+    {% if user.is_authenticated %}
+        <li><a href="/account">{{user.username}}</a></li>
+        <li><a href="/logout">Logout</a></li>
+    {% else %}
+        <li><a href="/register">Register</a></li>
+        <li><a href="/login">Login</a></li>
+    {% endif %}
+</ul>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+<script>
+$(document).ready(function(){
+    $('.sidenav').sidenav();
+});
+</script>

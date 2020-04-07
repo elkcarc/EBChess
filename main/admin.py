@@ -6,8 +6,8 @@ from django.db import models
 # Register your models here.
 
 class GameAdmin(admin.ModelAdmin):
+    readonly_fields = ('game_id',)
     fieldsets = [
-        ("Game ID", {"fields":["game_id"]}),
         ("Game Info", {"fields":["game_event", "game_site", "game_round"]}),
         ("Title/date", {"fields":["game_white", "game_black", "game_published"]}),
         ("Content", {"fields":["game_content", "game_result"]})
@@ -16,6 +16,9 @@ class GameAdmin(admin.ModelAdmin):
     formfield_overrides = {
         models.TextField: {'widget': TinyMCE}
     }
+
+    def game_id(self, obj):
+        return obj.id
 
 admin.site.register(Game, GameAdmin)
 
