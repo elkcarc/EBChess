@@ -1,0 +1,16 @@
+<head>
+    {% load static %}
+    <link href="{% static 'tinymce/css/prism.css' %}" rel="stylesheet">
+</head>
+
+<body>
+    {% for game in games %}
+        <p>{{game.game_players}}</p>
+        <p>{{game.game_published}}</p>
+        <p>{{game.game_content|safe}}</p>
+        <br><br>
+    {% endfor %}
+</body>
+
+<script src="{% static 'tinymce/js/prism.js' %}"></script>
+

@@ -1,6 +1,11 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from .models import Game
+
 
 # Create your views here.
 def homepage(request):
-    return HttpResponse("僕はミームに愛をする")
+    return render(request=request, 
+                  template_name="main/home.html",
+                  context={"games": Game.objects.all})
+
+                  
