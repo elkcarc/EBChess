@@ -2,6 +2,20 @@
 
 
 {% block content %}
+
+    <div class="row">
+        <div id="myBoard" style="width: 500px"></div>
+        <button id="startBtn">Start Position</button>
+    </div>
+    <script>
+        var board = Chessboard('myBoard', {draggable: true,
+                                           moveSpeed: 'slow',
+                                           snapbackSpeed: 500,
+                                           snapSpeed: 100,
+                                           position: 'start'})
+        $('#startBtn').on('click', board.start)
+    </script>
+
     <div class="col">
         <div class="col s12 m6">
             <div class="card green lighten-3">
