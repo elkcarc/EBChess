@@ -16,6 +16,14 @@ class Game(models.Model):
     def __str__(self):
         return self.game_content
 
+class ChallengeManager(models.Manager):
+    def create_challenge(self, user1, user2, issued, message):
+        challenge = self.create(challenge_user1=user1)
+        challenge = self.create(challenge_user2=user2)
+        challenge = self.create(challenge_issued=issued)
+        challenge = self.create(challenge_message=message)
+        return challenge
+
 
 class Challenge(models.Model):
     challenge_id = models.AutoField(primary_key=True)

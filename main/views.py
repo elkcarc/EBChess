@@ -3,8 +3,9 @@ from .models import Game, Challenge, Active, Ai
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
-from .forms import NewUserForm
+from .forms import NewUserForm, ChallengeForm
 from django.http import HttpResponse
+from datetime import datetime
 
 
 # Create your views here.
@@ -76,10 +77,33 @@ def account_request(request):
                   context={"games": games,
                            "nogamesfound" : nogamesfound})
 
+def challenges_issue(request):
+    if request.method == "POST":
+        form = ChallengeForm(request.POST)
+        if form.is_valid():
+            opponent = form.cleaned_data.get('opponent')
+            message = form.cleaned_data.get('message')
+            new_challenge_obj = Challenge(challenge_user1=request.user.username,
+                                          challenge_user2=opponent,
+                                          challenge_issued=datetime.now(),
+                                          challenge_message=message)
+            new_challenge_obj.save()
+            messages.info(request, f"Sent Challenge to {opponent}")
+            return redirect("main:homepage")
+        else:
+            for msg in form.error_messages:
+                messages.error(request, f"{msg} : {form.error_messages[msg]}")
+    form = ChallengeForm
+    return render(request=request,
+                  template_name="main/issue.html",
+                  context={"form":form})
+
+
+
 def challenges_request(request):
     challenges = []
     for c in Challenge.objects.all():
-        if c.challenge_user1 == request.user.username or c.challenge_user1 == request.user.username:
+        if c.challenge_user2 == request.user.username:
             challenges.append(c)
     nochallengesfound = True
     if len(challenges) > 1:
@@ -123,3 +147,4 @@ def single_slug(request, single_slug):
         return render(request=request,
                       template_name="main/game.html",
                       context={"game": game})
+

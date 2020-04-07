@@ -15,3 +15,10 @@ class NewUserForm(UserCreationForm):
         if commit:
             user.save()
         return user
+
+class ChallengeForm(forms.Form):
+    opponent = forms.CharField(label='Opponent', max_length=200)
+    message = forms.CharField(label='Message', max_length=200)
+
+
+

@@ -29,4 +29,18 @@
             </div>
         </div>
     </div>
-{% endblock %}s
+
+    <div class="fixed-action-btn">
+        <a href="/challenges/issue">
+            <div class="btn-floating btn-large green">
+                <i class="large material-icons">add</i>
+            </div>
+        </a>
+    </div>
+    <script>
+        $(document).ready(function(){
+            $('.fixed-action-btn').floatingActionButton();
+        });
+    </script>
+
+{% endblock %}

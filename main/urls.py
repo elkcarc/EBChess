@@ -24,6 +24,7 @@ urlpatterns = [
     path("logout/", views.logout_request, name="logout"),
     path("login/", views.login_request, name="login"),
     path("account/", views.account_request, name="account"),
+    path("challenges/issue/", views.challenges_issue, name="challenge_issue"),
     path("challenges/", views.challenges_request, name="challenges"),
     path("active/", views.active_request, name="active"),
     path("ai/", views.ai_request, name="ai"),
