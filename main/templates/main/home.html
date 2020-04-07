@@ -5,18 +5,17 @@
     <div class="col">
         {% for game in games %}
             <div class="col s12 m6">
-                <div class="card green lighten-3">
-                    <div class="card-content black-text">
-                        <span class="card-title"> {{game.game_players}}</span>
-                        <p>{{game.game_published}}</p>
-                        <br>
-                        <p>{{game.game_content|safe}}</p>
+                <a href="{{game.game_id}}">
+                    <div class="card hoverable green lighten-3">
+                        <div class="card-content black-text">
+                            <span class="card-title"> {{game.game_white}} vs. {{game.game_black}}</span>
+                            <p>{{game.game_published}}</p>
+                            <br>
+                            <p>{{game.game_content|safe}}</p>
+                        </div>
                     </div>
-                    <div class="card-action ">
-                        <a href="#">Watch</a>
-                    </div>
-                </div>
+                </a>
             </div>
         {% endfor %}
     </div>
-{% endblock %}
+{% endblock %}s

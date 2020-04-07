@@ -7,8 +7,10 @@ from django.db import models
 
 class GameAdmin(admin.ModelAdmin):
     fieldsets = [
-        ("Title/date", {"fields":["game_players", "game_published"]}),
-        ("Content", {"fields":["game_content"]})
+        ("Game ID", {"fields":["game_id"]}),
+        ("Game Info", {"fields":["game_event", "game_site", "game_round"]}),
+        ("Title/date", {"fields":["game_white", "game_black", "game_published"]}),
+        ("Content", {"fields":["game_content", "game_result"]})
     ]
 
     formfield_overrides = {

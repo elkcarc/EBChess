@@ -1,0 +1,17 @@
+{% extends "main/header.html" %}
+
+
+{% block content %}
+    <div class="col">
+        <div class="col s12 m6">
+            <div class="card green lighten-3">
+                <div class="card-content black-text">
+                    <span class="card-title"> {{game.game_white}} vs. {{game.game_black}}</span>
+                    <p>{{game.game_published}}</p>
+                    <br>
+                    <p>{{game.game_content|safe}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

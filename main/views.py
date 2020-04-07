@@ -4,9 +4,25 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from .forms import NewUserForm
+from django.http import HttpResponse
 
 
 # Create your views here.
+
+def single_slug(request, single_slug):
+    game = -1
+
+    for g in Game.objects.all():
+        if g.game_id == single_slug:
+            game = g
+
+    if game != -1:
+        return render(request=request,
+                      template_name="main/game.html",
+                      context={"game": game})
+    
+    return HttpResponse("Error 404: Resource Not Found")
+
 def homepage(request):
     return render(request=request, 
                   template_name="main/home.html",
