@@ -2,21 +2,7 @@
 
 {% block content %}
 
-    <div class="row">
-        <div class="col s12 m6 offset-m3">
-            <div id="myBoard" style="width: 100%"></div>
-            <button id="startBtn">Start Position</button>
-        </div>
-    </div>
-    <script>
-        var board = Chessboard('myBoard', {draggable: true,
-                                           moveSpeed: 'slow',
-                                           snapbackSpeed: 500,
-                                           snapSpeed: 100,
-                                           position: 'start'})
-        $('#startBtn').on('click', board.start)
-        $(window).resize(board.resize)
-    </script>
+    {% include "main/includes/EBChessboard.html" %}
 
     <div class="col">
         <div class="col s12 m6">
