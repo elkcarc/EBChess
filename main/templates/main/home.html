@@ -1,16 +1,22 @@
-<head>
-    {% load static %}
-    <link href="{% static 'tinymce/css/prism.css' %}" rel="stylesheet">
-</head>
+{% extends "main/header.html" %}
 
-<body>
-    {% for game in games %}
-        <p>{{game.game_players}}</p>
-        <p>{{game.game_published}}</p>
-        <p>{{game.game_content|safe}}</p>
-        <br><br>
-    {% endfor %}
-</body>
 
-<script src="{% static 'tinymce/js/prism.js' %}"></script>
-
+{% block content %}
+    <div class="col">
+        {% for game in games %}
+            <div class="col s12 m6">
+                <div class="card blue-grey darken-1">
+                    <div class="card-content white-text">
+                        <span class="card-title"> {{game.game_players}}</span>
+                        <p>{{game.game_published}}</p>
+                        <br>
+                        <p>{{game.game_content|safe}}</p>
+                    </div>
+                    <div class="card-action">
+                        <a href="#">Watch</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
