@@ -3,8 +3,10 @@
 {% block content %}
 
     <div class="row">
-        <div id="myBoard" style="width: 500px"></div>
-        <button id="startBtn">Start Position</button>
+        <div class="col s12 m6 offset-m3">
+            <div id="myBoard" style="width: 100%"></div>
+            <button id="startBtn">Start Position</button>
+        </div>
     </div>
     <script>
         var board = Chessboard('myBoard', {draggable: true,
@@ -13,6 +15,7 @@
                                            snapSpeed: 100,
                                            position: 'start'})
         $('#startBtn').on('click', board.start)
+        $(window).resize(board.resize)
     </script>
 
     <div class="col">
