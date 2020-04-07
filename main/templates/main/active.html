@@ -3,9 +3,14 @@
 
 {% block content %}
     <div class="col">
+        <div class="card green">
+            <div class="card-content white-text">
+                <span class="card-title"><strong>Ongoing Games</strong></span>
+            </div>
+        </div>
         {% for a in active %}
             <div class="col s12 m6">
-                <a href="../{{a.active_id}}">
+                <a href="../{{a.active_id}}"> <!--on completion create game -->
                     <div class="card hoverable green lighten-3">
                         <div class="card-content black-text">
                             <span class="card-title"> {{a.user1}} vs. {{a.user2}}</span>
@@ -17,7 +22,7 @@
                 </a>
             </div>
         {% endfor %}
-        <div class="card hoverable green lighten-3">
+        <div class="card green lighten-3">
             <div class="card-content black-text">
                 <span class="card-title"> No Other Active Games Found</span>
                 <p> :( </p>

@@ -3,9 +3,14 @@
 
 {% block content %}
     <div class="col">
+        <div class="card green">
+            <div class="card-content white-text">
+                <span class="card-title"><strong>Outstanding Challenges</strong></span>
+            </div>
+        </div>
         {% for challenge in challenges %}
             <div class="col s12 m6">
-                <a href="../{{challenge.challenge_id}}">
+                <a href="../{{challenge.challenge_id}}"> <!--create active -->
                     <div class="card hoverable green lighten-3">
                         <div class="card-content black-text">
                             <span class="card-title"> {{challenge.challenge_user1}} vs. {{challenge.challenge_user2}}</span>
@@ -17,7 +22,7 @@
                 </a>
             </div>
         {% endfor %}
-        <div class="card hoverable green lighten-3">
+        <div class="card green lighten-3">
             <div class="card-content black-text">
                 <span class="card-title"> No Other Challenges Found</span>
                 <p> :( </p>
