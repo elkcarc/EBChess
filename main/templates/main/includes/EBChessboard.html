@@ -115,19 +115,19 @@
 
 
 <script>
-    console.log(window.location)
+    //console.log(window.location)
     var loc = window.location
+    var wsStart = 'ws://'
     if(loc.protocol == 'https:'){
         wsStart = 'wss//'
-    }
-    var wsStart = 'ws://' 
+    } 
     var endpoint = wsStart + loc.host + loc.pathname
     var socket = new WebSocket(endpoint)
 
     socket.onmessage = function(e){
         console.log("message", e)
     }
-    socket.opopen = function(e){
+    socket.onopen = function(e){
         console.log("open", e)
     }
     socket.onerror = function(e){

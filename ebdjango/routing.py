@@ -9,7 +9,8 @@ application = ProtocolTypeRouter({
         AuthMiddlewareStack(
             URLRouter(
                 [
-                    url("active/<active_slug>/", ChatConsumer),
+                    url(r"^active/(?P<active_slug>[\w.@+-]+)/$", ChatConsumer),
+                    url(r"^game/(?P<game_slug>[\w.@+-]+)/$", ChatConsumer),
                 ]
             )
         )
