@@ -1,7 +1,11 @@
 
+
+
 <div class="row">
     <div class="col s12 m6 offset-m3">
         <div id="myBoard" style="width: 100%"></div>
+        <button id="flipOrientationBtn">Flip</button>
+        <br>
         <label>Status:</label>
         <div id="status"></div>
         <label>FEN:</label>
@@ -10,12 +14,14 @@
         <div id="pgn"></div>
     </div>
 </div>
+
 <script>
     var board = null
     var game = new Chess()
     var $status = $('#status')
     var $fen = $('#fen')
     var $pgn = $('#pgn')
+    
 
     function onDragStart (source, piece, position, orientation) {
     // do not pick up pieces if the game is over
@@ -89,6 +95,45 @@
     onSnapEnd: onSnapEnd
     }
     board = Chessboard('myBoard', config)
+    $(window).resize(board.resize)
+    $('#showOrientationBtn').on('click', function () {
+    console.log('Board orientation is: ' + board.orientation())
+    })
 
+    $('#flipOrientationBtn').on('click', board.flip)
+
+    $('#whiteOrientationBtn').on('click', function () {
+    board.orientation('white')
+    })
+
+    $('#blackOrientationBtn').on('click', function () {
+    board.orientation('black')
+    })
     updateStatus()
+
+</script>
+
+
+<script>
+    console.log(window.location)
+    var loc = window.location
+    if(loc.protocol == 'https:'){
+        wsStart = 'wss//'
+    }
+    var wsStart = 'ws://' 
+    var endpoint = wsStart + loc.host + loc.pathname
+    var socket = new WebSocket(endpoint)
+
+    socket.onmessage = function(e){
+        console.log("message", e)
+    }
+    socket.opopen = function(e){
+        console.log("open", e)
+    }
+    socket.onerror = function(e){
+        console.log("error", e)
+    }
+    socket.onclose = function(e){
+        console.log("close", e)
+    }
 </script>

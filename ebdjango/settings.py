@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main.apps.MainConfig',
     'tinymce',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -80,6 +81,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'ebdjango.urls'
+ASGI_APPLICATION = "ebdjango.routing.application"
 
 TEMPLATES = [
     {
