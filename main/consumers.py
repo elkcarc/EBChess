@@ -5,7 +5,7 @@ from channels.consumer import AsyncConsumer
 from channels.db import database_sync_to_async
 from .models import Game, Challenge, Active, Ai
 
-class MainConsumer(AsyncConsumer):
+class ChessBoardConsumer(AsyncConsumer):
     async def websocket_connect(self, event):
         print ("connected", event)
         await self.send({
