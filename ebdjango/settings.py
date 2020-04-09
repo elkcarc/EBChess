@@ -74,23 +74,23 @@ WSGI_APPLICATION = 'ebdjango.wsgi.application'
 
 # Channels
 ASGI_APPLICATION = 'ebdjango.routing.application'
-# CHANNEL_LAYERS = {
-#     'default': {
-#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
-#         'CONFIG': {
-#             "hosts": [('127.0.0.1', 6379)],
-#         },
-#     },
-# }
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": ["redis://(ebchess.tzqnwf.0001.use1.cache.amazonaws.com, 6379)"],
+            "hosts": [('127.0.0.1', 6379)],
         },
-        "ROUTING": "ebchess.routing.channel_routing", 
     },
 }
+# CHANNEL_LAYERS = {
+#     'default': {
+#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
+#         'CONFIG': {
+#             "hosts": ["redis://(ebchess.tzqnwf.0001.use1.cache.amazonaws.com, 6379)"],
+#         },
+#         "ROUTING": "ebchess.routing.channel_routing", 
+#     },
+# }
 
 TEMPLATES = [
     {

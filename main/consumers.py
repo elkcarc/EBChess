@@ -24,8 +24,29 @@ class ChessBoardConsumer(AsyncWebsocketConsumer):
             self.room_group_name,
             self.channel_name
         )
-
         await self.accept()
+        if gametype == "active":
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'init_message',
+                    'fen': board_obj.active_fen,
+                    'pgn': board_obj.active_content,
+                })
+        else:
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'init_message',
+                    'fen': board_obj.game_fen,
+                    'pgn': board_obj.game_content,
+                })
+            
+    async def init_message(self, event):
+        # Send message to WebSocket
+        print("Sending init fen...")
+        print(event)
+        await self.send(json.dumps(event))
 
     # Receive message from WebSocket
     async def receive(self, text_data):
@@ -43,18 +64,32 @@ class ChessBoardConsumer(AsyncWebsocketConsumer):
                 gametype = "active"
                 board_id = self.scope['url_route']['kwargs']['active_slug']
                 board_obj = await self.get_active(board_id)
-                board_obj.game_fen = gameupdate_json["fen"]
-                board_obj.game_content = gameupdate_json["pgn"]
-            await self.channel_layer.group_send(
-                self.room_group_name,
-                {
-                    'type': 'move_approval_message',
-                    'fen': board_obj.game_fen,
-                    'pgn': board_obj.game_content,
-                    'movesource': gameupdate_json["movesource"],
-                    'movetarget': gameupdate_json["movetarget"],
-                }   
-            )
+                board_obj.active_fen = gameupdate_json["fen"]
+                board_obj.active_content = gameupdate_json["pgn"]
+            
+            if gametype == "game":
+                await self.channel_layer.group_send(
+                    self.room_group_name,
+                    {
+                        'type': 'move_approval_message',
+                        'fen': board_obj.game_fen,
+                        'pgn': board_obj.game_content,
+                        'movesource': gameupdate_json["movesource"],
+                        'movetarget': gameupdate_json["movetarget"],
+                    }   
+                )
+            if gametype == "active":
+                await self.channel_layer.group_send(
+                    self.room_group_name,
+                    {
+                        'type': 'move_approval_message',
+                        'fen': board_obj.active_fen,
+                        'pgn': board_obj.active_content,
+                        'movesource': gameupdate_json["movesource"],
+                        'movetarget': gameupdate_json["movetarget"],
+                    }   
+                )
+                self.update_active(gameupdate_json)
             if 'status' in gameupdate_json:
                 if "Game" in gameupdate_json["status"]:
                     self.disconnect()
@@ -88,4 +123,11 @@ class ChessBoardConsumer(AsyncWebsocketConsumer):
                 #print("found active with active_id = ", aid)
                 return a
 
-
+    def update_active(self, data):
+        active = Active.objects.filter(pk=self.scope['url_route']['kwargs']['active_slug'])
+        print(active[0].active_fen)
+        active.update(active_content=data["pgn"])
+        active.update(active_fen=data["fen"])
+        active[0].save()
+        print(active[0].active_fen)
+        

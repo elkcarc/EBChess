@@ -22,7 +22,19 @@
     var endpoint = wsStart + loc.host + loc.pathname
     var socket = new WebSocket(endpoint)
 
+    socket.onerror = function(e){
+        
+    }
+
     socket.onmessage = function(e){
+
+        checkinit = JSON.parse(e.data)
+        if (checkinit.type === "init_message")
+        {
+            board.position(checkinit.fen)
+            game.load_pgn(checkinit.pgn)
+            return
+        }
 
         console.log("message", e)
         var servermove = JSON.parse(e.data)
@@ -33,6 +45,8 @@
             to: servermove.movetarget,
             promotion: 'q' // NOTE: always promote to a queen for now
         })
+
+        board.position(game.fen())
 
         // illegal move
         if (move === null) return 'snapback'

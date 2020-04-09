@@ -12,7 +12,7 @@ class Game(models.Model):
     game_black = models.CharField(max_length=200, default="Unknown")
     game_result = models.CharField(max_length=20, default="Unknown")
     game_content = models.TextField(default="None")
-    game_fen = models.TextField(default="None")
+    game_fen = models.TextField(default="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
 
     def __str__(self):
         return str(self.game_white + " vs " + self.game_black)
@@ -33,7 +33,7 @@ class Active(models.Model):
     user2 = models.CharField(max_length=200, default="Not Set")
     last_move = models.DateTimeField("last move", default=datetime.now())
     active_content = models.TextField(default="None")
-    active_fen = models.TextField(default="None")
+    active_fen = models.TextField(default="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
 
     def __str__(self):
         return str(self.user1 + " vs " + self.user2)
