@@ -151,6 +151,13 @@ class PostGISOperations(BaseSpatialOperations, DatabaseOperations):
             'BoundingCircle': 'ST_MinimumBoundingCircle',
             'NumPoints': 'ST_NPoints',
         }
+        if self.spatial_version < (2, 2, 0):
+            function_names.update({
+                'DistanceSphere': 'ST_distance_sphere',
+                'DistanceSpheroid': 'ST_distance_spheroid',
+                'LengthSpheroid': 'ST_length_spheroid',
+                'MemSize': 'ST_mem_size',
+            })
         if self.spatial_version < (2, 4, 0):
             function_names['ForcePolygonCW'] = 'ST_ForceRHR'
         return function_names
@@ -178,7 +185,7 @@ class PostGISOperations(BaseSpatialOperations, DatabaseOperations):
                 raise ImproperlyConfigured(
                     'Cannot determine PostGIS version for database "%s" '
                     'using command "SELECT postgis_lib_version()". '
-                    'GeoDjango requires at least PostGIS version 2.2. '
+                    'GeoDjango requires at least PostGIS version 2.1. '
                     'Was the database created from a spatial database '
                     'template?' % self.connection.settings_dict['NAME']
                 )
@@ -271,12 +278,12 @@ class PostGISOperations(BaseSpatialOperations, DatabaseOperations):
         not in the SRID of the field. Specifically, this routine will
         substitute in the ST_Transform() function call.
         """
-        transform_func = self.spatial_function_name('Transform')
+        tranform_func = self.spatial_function_name('Transform')
         if hasattr(value, 'as_sql'):
             if value.field.srid == f.srid:
                 placeholder = '%s'
             else:
-                placeholder = '%s(%%s, %s)' % (transform_func, f.srid)
+                placeholder = '%s(%%s, %s)' % (tranform_func, f.srid)
             return placeholder
 
         # Get the srid for this object
@@ -290,7 +297,7 @@ class PostGISOperations(BaseSpatialOperations, DatabaseOperations):
         if value_srid is None or value_srid == f.srid:
             placeholder = '%s'
         else:
-            placeholder = '%s(%%s, %s)' % (transform_func, f.srid)
+            placeholder = '%s(%%s, %s)' % (tranform_func, f.srid)
 
         return placeholder
 

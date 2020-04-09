@@ -1,4 +1,5 @@
 import os
+from collections import OrderedDict
 
 from django.apps import apps
 from django.contrib.staticfiles.finders import get_finders
@@ -50,16 +51,16 @@ class Command(BaseCommand):
                  "pattern. Use multiple times to ignore more.",
         )
         parser.add_argument(
-            '-n', '--dry-run', action='store_true',
+            '-n', '--dry-run', action='store_true', dest='dry_run',
             help="Do everything except modify the filesystem.",
         )
         parser.add_argument(
-            '-c', '--clear', action='store_true',
+            '-c', '--clear', action='store_true', dest='clear',
             help="Clear the existing files using the storage "
                  "before trying to copy or link the original file.",
         )
         parser.add_argument(
-            '-l', '--link', action='store_true',
+            '-l', '--link', action='store_true', dest='link',
             help="Create a symbolic link to each file instead of copying.",
         )
         parser.add_argument(
@@ -79,7 +80,7 @@ class Command(BaseCommand):
         ignore_patterns = options['ignore_patterns']
         if options['use_default_ignore_patterns']:
             ignore_patterns += apps.get_app_config('staticfiles').ignore_patterns
-        self.ignore_patterns = list(set(os.path.normpath(p) for p in ignore_patterns))
+        self.ignore_patterns = list(set(ignore_patterns))
         self.post_process = options['post_process']
 
     def collect(self):
@@ -99,7 +100,7 @@ class Command(BaseCommand):
         else:
             handler = self.copy_file
 
-        found_files = {}
+        found_files = OrderedDict()
         for finder in get_finders():
             for path, storage in finder.list(self.ignore_patterns):
                 # Prefix the relative path if the source storage contains it
@@ -270,6 +271,7 @@ class Command(BaseCommand):
                         # unmodified files.
                         can_skip_unmodified_files = not (self.symlink ^ os.path.islink(full_path))
                     else:
+                        full_path = None
                         # In remote storages, skipping is only based on the
                         # modified times since symlinks aren't relevant.
                         can_skip_unmodified_files = True
@@ -309,7 +311,10 @@ class Command(BaseCommand):
         else:
             self.log("Linking '%s'" % source_path, level=2)
             full_path = self.storage.path(prefixed_path)
-            os.makedirs(os.path.dirname(full_path), exist_ok=True)
+            try:
+                os.makedirs(os.path.dirname(full_path))
+            except OSError:
+                pass
             try:
                 if os.path.lexists(full_path):
                     os.unlink(full_path)

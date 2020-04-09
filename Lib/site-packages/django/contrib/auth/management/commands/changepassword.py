@@ -26,7 +26,7 @@ class Command(BaseCommand):
             help='Username to change password for; by default, it\'s the current username.',
         )
         parser.add_argument(
-            '--database',
+            '--database', action='store', dest='database',
             default=DEFAULT_DB_ALIAS,
             help='Specifies the database to use. Default is "default".',
         )
