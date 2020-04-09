@@ -1,6 +1,3 @@
-
-
-
 <div class="row">
     <div class="col s12 m6 offset-m3">
         <div id="myBoard" style="width: 100%"></div>
@@ -27,10 +24,21 @@
 
     socket.onmessage = function(e){
         console.log("message", e)
+
+        var servermove = JSON.parse(e.data)
+        
+        var move = game.move({
+            from: servermove.movesource,
+            to: servermove.movetarget,
+            promotion: 'q' // NOTE: always promote to a queen for now
+        })
+
+        // illegal move
+        if (move === null) return 'snapback'
+
+        updateStatus()
     }
-    socket.onopen = function(e){
-        console.log("open", e)
-    }
+
     socket.onerror = function(e){
         console.log("error", e)
     }
@@ -43,93 +51,99 @@
     var $status = $('#status')
     var $fen = $('#fen')
     var $pgn = $('#pgn')
-    
+    var localsource
+    var localtarget
 
     function onDragStart (source, piece, position, orientation) {
-    // do not pick up pieces if the game is over
-    if (game.game_over()) return false
+        // do not pick up pieces if the game is over
+        if (game.game_over()) return false
 
-    // only pick up pieces for the side to move
-    if ((game.turn() === 'w' && piece.search(/^b/) !== -1) ||
-        (game.turn() === 'b' && piece.search(/^w/) !== -1)) {
-        return false
-    }
+        // only pick up pieces for the side to move
+        if ((game.turn() === 'w' && piece.search(/^b/) !== -1) ||
+            (game.turn() === 'b' && piece.search(/^w/) !== -1)) {
+            return false
+        }
     }
 
     function onDrop (source, target) {
-    // see if the move is legal
-    var move = game.move({
-        from: source,
-        to: target,
-        promotion: 'q' // NOTE: always promote to a queen for example simplicity
-    })
-
-    // illegal move
-    if (move === null) return 'snapback'
-
-    updateStatus()
+        // see if the move is legal
+        localsource = source
+        localtarget = target
+        var gameupdate = {pgn:game.pgn(), fen:game.fen(), movesource:localsource, movetarget:localtarget}
+        console.log("sending move", gameupdate)
+        socket.send(JSON.stringify(gameupdate))
     }
 
     // update the board position after the piece snap
     // for castling, en passant, pawn promotion
     function onSnapEnd () {
-    board.position(game.fen())
+        board.position(game.fen())
     }
 
     function updateStatus () {
-    var status = ''
+        var status = ''
+        var sendEndState = false
 
-    var moveColor = 'White'
-    if (game.turn() === 'b') {
-        moveColor = 'Black'
-    }
-
-    // checkmate?
-    if (game.in_checkmate()) {
-        status = 'Game over, ' + moveColor + ' is in checkmate.'
-    }
-
-    // draw?
-    else if (game.in_draw()) {
-        status = 'Game over, drawn position'
-    }
-
-    // game still on
-    else {
-        status = moveColor + ' to move'
-
-        // check?
-        if (game.in_check()) {
-        status += ', ' + moveColor + ' is in check'
+        var moveColor = 'White'
+        if (game.turn() === 'b') {
+            moveColor = 'Black'
         }
-    }
 
-    $status.html(status)
-    $fen.html(game.fen())
-    $pgn.html(game.pgn())
+        // checkmate?
+        if (game.in_checkmate()) {
+            status = 'Game over, ' + moveColor + ' is in checkmate.'
+            sendEndState = true
+        }
+
+        // draw?
+        else if (game.in_draw()) {
+            status = 'Game over, drawn position'
+            sendEndState = true
+        }
+
+        // game still on
+        else {
+            status = moveColor + ' to move'
+
+            // check?
+            if (game.in_check()) {
+            status += ', ' + moveColor + ' is in check'
+            }
+        }
+
+        $status.html(status)
+        $fen.html(game.fen())
+        $pgn.html(game.pgn())
+
+        if (sendEndState){
+            var gameupdate = {pgn:game.pgn(), fen:game.fen(), status}
+            console.log("sending end state", gameupdate)
+            socket.send(JSON.stringify(gameupdate))
+        }
+
     }
 
     var config = {
-    draggable: true,
-    position: 'start',
-    onDragStart: onDragStart,
-    onDrop: onDrop,
-    onSnapEnd: onSnapEnd
+        draggable: true,
+        position: 'start',
+        onDragStart: onDragStart,
+        onDrop: onDrop,
+        onSnapEnd: onSnapEnd
     }
     board = Chessboard('myBoard', config)
     $(window).resize(board.resize)
     $('#showOrientationBtn').on('click', function () {
-    console.log('Board orientation is: ' + board.orientation())
+        console.log('Board orientation is: ' + board.orientation())
     })
 
     $('#flipOrientationBtn').on('click', board.flip)
 
     $('#whiteOrientationBtn').on('click', function () {
-    board.orientation('white')
+        board.orientation('white')
     })
 
     $('#blackOrientationBtn').on('click', function () {
-    board.orientation('black')
+        board.orientation('black')
     })
     updateStatus()
 

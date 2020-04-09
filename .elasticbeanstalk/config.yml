@@ -1,2 +1,5 @@
+branch-defaults:
+  master:
+    environment: ebchessapp
 global:
   profile: eb-cli

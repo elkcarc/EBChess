@@ -70,6 +70,17 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'ebdjango.urls'
 ASGI_APPLICATION = "ebdjango.routing.application"
+WSGI_APPLICATION = 'ebdjango.wsgi.application'
+
+# Channels
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
 
 TEMPLATES = [
     {
@@ -87,7 +98,6 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'ebdjango.wsgi.application'
 
 
 # Database
@@ -137,5 +147,5 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
-STATIC_ROOT = os.path.join(BASE_DIR)
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATIC_URL = '/static/'

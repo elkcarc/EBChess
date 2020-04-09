@@ -112,12 +112,14 @@ def challenges_accept(request, challenge_slug):
             new_active_obj = Active(user1=challenge.challenge_user1,
                                     user2=request.user.username,
                                     last_move=datetime.now(),
-                                    active_content="")
+                                    active_content="",
+                                    active_fen="")
         else:
             new_active_obj = Active(user1=request.user.username,
                                     user2=challenge.challenge_user1,
                                     last_move=datetime.now(),
-                                    active_content="")
+                                    active_content="",
+                                    active_fen="")
         new_active_obj.save()
         messages.info(request, f"Accepted Challenge from {challenge.challenge_user1}")
         instance = Challenge.objects.get(challenge_id=challenge.challenge_id)
@@ -150,7 +152,7 @@ def challenges_request(request):
 def active_request(request):
     active = []
     for a in Active.objects.all():
-        if a.user1 == request.user.username or a.user1 == request.user.username:
+        if a.user1 == request.user.username or a.user2 == request.user.username:
             active.append(a)
     noactivefound = True
     if len(active) > 1:
@@ -176,7 +178,8 @@ def active_slug_resign(request, active_slug):
                             game_white=active.user1,
                             game_black=active.user2,
                             game_result=result,
-                            game_content=active.active_content)
+                            game_content=active.active_content,
+                            game_fen=active.active_fen)
         new_game_obj.save()
         messages.info(request, f"Resigned game against {active.user2}")
         instance = Active.objects.get(active_id=active.active_id)
