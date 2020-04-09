@@ -24,9 +24,9 @@
 
     socket.onmessage = function(e){
         console.log("message", e)
-
         var servermove = JSON.parse(e.data)
         
+        console.log("moving", servermove.movesource, servermove.movetarget)
         var move = game.move({
             from: servermove.movesource,
             to: servermove.movetarget,
@@ -120,7 +120,6 @@
             console.log("sending end state", gameupdate)
             socket.send(JSON.stringify(gameupdate))
         }
-
     }
 
     var config = {
@@ -145,7 +144,7 @@
     $('#blackOrientationBtn').on('click', function () {
         board.orientation('black')
     })
-    updateStatus()
+    
 
 
 
