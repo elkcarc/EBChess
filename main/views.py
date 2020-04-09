@@ -113,13 +113,13 @@ def challenges_accept(request, challenge_slug):
                                     user2=request.user.username,
                                     last_move=datetime.now(),
                                     active_content="",
-                                    active_fen="")
+                                    active_fen="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
         else:
             new_active_obj = Active(user1=request.user.username,
                                     user2=challenge.challenge_user1,
                                     last_move=datetime.now(),
                                     active_content="",
-                                    active_fen="")
+                                    active_fen="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
         new_active_obj.save()
         messages.info(request, f"Accepted Challenge from {challenge.challenge_user1}")
         instance = Challenge.objects.get(challenge_id=challenge.challenge_id)
@@ -181,7 +181,10 @@ def active_slug_resign(request, active_slug):
                             game_content=active.active_content,
                             game_fen=active.active_fen)
         new_game_obj.save()
-        messages.info(request, f"Resigned game against {active.user2}")
+        if request.user.username == active.user1:
+            messages.info(request, f"Resigned game against {active.user2}")
+        else:
+            messages.info(request, f"Resigned game against {active.user1}")
         instance = Active.objects.get(active_id=active.active_id)
         instance.delete()
         return redirect("main:homepage")

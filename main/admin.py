@@ -10,7 +10,7 @@ class GameAdmin(admin.ModelAdmin):
     fieldsets = [
         ("Game Info", {"fields":["game_event", "game_site", "game_round"]}),
         ("Title/date", {"fields":["game_white", "game_black", "game_published"]}),
-        ("Content", {"fields":["game_content", "game_result"]})
+        ("Content", {"fields":["game_content", "game_fen" , "game_result"]})
     ]
 
     formfield_overrides = {
@@ -38,7 +38,7 @@ class ActiveAdmin(admin.ModelAdmin):
     readonly_fields = ('active_id',)
     fieldsets = [
         ("Title/date", {"fields":["user1", "user2", "last_move"]}),
-        ("Content", {"fields":["active_content"]})
+        ("Content", {"fields":["active_content", "active_fen"]})
     ]
 
     formfield_overrides = {

@@ -4,6 +4,7 @@ from asgiref.sync import async_to_sync
 from .models import Game, Challenge, Active, Ai
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
+from datetime import datetime
 
 class ChessBoardConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -52,21 +53,45 @@ class ChessBoardConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         print("Received message:")
         gameupdate_json = json.loads(text_data)
+        if 'game_slug' in self.scope['url_route']['kwargs']:
+            gametype = "game"
+            board_id = self.scope['url_route']['kwargs']['game_slug']
+            board_obj = await self.get_game(board_id)
+            board_obj.game_fen = gameupdate_json["fen"]
+            board_obj.game_content = gameupdate_json["pgn"]
+        else:
+            gametype = "active"
+            board_id = self.scope['url_route']['kwargs']['active_slug']
+            board_obj = await self.get_active(board_id)
+            board_obj.active_fen = gameupdate_json["fen"]
+            board_obj.active_content = gameupdate_json["pgn"]
+        if 'status' in gameupdate_json and gametype == "active":
+            if "Game" in gameupdate_json["status"]:
+                if gameupdate_json["moveColor"] == "Black":
+                    result = "1-0"
+                elif gameupdate_json["moveColor"] == "White":
+                    result = "0-1"
+                if "drawn" in gameupdate_json["status"]:
+                    result = "1/2-1/2"
+                self.update_active(gameupdate_json)
+                activeObj = Active.objects.filter(pk=self.scope['url_route']['kwargs']['active_slug'])
+                print(activeObj[0].active_fen)
+                new_game_obj = Game(game_event="No Event",
+                                    game_site="On-line",
+                                    game_published=datetime.now(),
+                                    game_round="1",
+                                    game_white=activeObj[0].user1,
+                                    game_black=activeObj[0].user2,
+                                    game_result=result,
+                                    game_content=activeObj[0].active_content,
+                                    game_fen=activeObj[0].active_fen)
+                new_game_obj.save()
+                instance = Active.objects.get(active_id=activeObj[0].active_id)
+                instance.delete()
+                self.disconnect(0)
+                return
         if text_data is not None:
-            print(gameupdate_json)
-            if 'game_slug' in self.scope['url_route']['kwargs']:
-                gametype = "game"
-                board_id = self.scope['url_route']['kwargs']['game_slug']
-                board_obj = await self.get_game(board_id)
-                board_obj.game_fen = gameupdate_json["fen"]
-                board_obj.game_content = gameupdate_json["pgn"]
-            else:
-                gametype = "active"
-                board_id = self.scope['url_route']['kwargs']['active_slug']
-                board_obj = await self.get_active(board_id)
-                board_obj.active_fen = gameupdate_json["fen"]
-                board_obj.active_content = gameupdate_json["pgn"]
-            
+            print(gameupdate_json)         
             if gametype == "game":
                 await self.channel_layer.group_send(
                     self.room_group_name,
@@ -90,9 +115,6 @@ class ChessBoardConsumer(AsyncWebsocketConsumer):
                     }   
                 )
                 self.update_active(gameupdate_json)
-            if 'status' in gameupdate_json:
-                if "Game" in gameupdate_json["status"]:
-                    self.disconnect()
 
     # Receive message from room group
     async def move_approval_message(self, event):
@@ -125,9 +147,9 @@ class ChessBoardConsumer(AsyncWebsocketConsumer):
 
     def update_active(self, data):
         active = Active.objects.filter(pk=self.scope['url_route']['kwargs']['active_slug'])
-        print(active[0].active_fen)
+        #print(active[0].active_fen)
         active.update(active_content=data["pgn"])
         active.update(active_fen=data["fen"])
         active[0].save()
-        print(active[0].active_fen)
+        #print(active[0].active_fen)
         
