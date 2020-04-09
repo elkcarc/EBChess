@@ -22,8 +22,6 @@
     var endpoint = wsStart + loc.host + loc.pathname
     var socket = new WebSocket(endpoint)
 
-    console.log(self.scope['user'])
-
     socket.onmessage = function(e){
         checkinit = JSON.parse(e.data)
         if (checkinit.type === "init_message")
