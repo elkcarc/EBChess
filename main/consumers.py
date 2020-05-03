@@ -90,7 +90,7 @@ class ChessBoardConsumer(AsyncWebsocketConsumer):
                 instance.delete()
                 self.disconnect(0)
                 return
-        if text_data is not None:
+        elif text_data is not None:
             print(gameupdate_json)         
             if gametype == "game":
                 await self.channel_layer.group_send(
