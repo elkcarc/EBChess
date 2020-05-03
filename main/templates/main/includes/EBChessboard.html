@@ -67,15 +67,22 @@
     function onDragStart (source, piece, position, orientation) {
         // do not pick up pieces if the game is over
         if (game.game_over()) return false
-        // only pick up pieces for the side to move
-        if ((game.turn() === 'w' && piece.search(/^b/) !== -1) || (game.turn() === 'b' && piece.search(/^w/) !== -1)) {
-
+        // only pick up pieces for the side to moveColor
+        /*
+        if(game.turn() === 'w' && {{ user.username }} !== {{ active.user1 }}){
             return false
         }
+        if(game.turn() === 'b' && {{ user.username }} !== {{ active.user2 }}){
+            return false
+        }
+        */
+        if ((game.turn() === 'w' && piece.search(/^b/) !== -1) || (game.turn() === 'b' && piece.search(/^w/) !== -1)) {
+            return false
+        }
+
     }
 
     function onDrop (source, target) {
-        // see if the move is legal
         localsource = source
         localtarget = target
         var gameupdate = {pgn:game.pgn(), fen:game.fen(), movesource:localsource, movetarget:localtarget}
