@@ -8,8 +8,9 @@
             <a href="#" data-target="mobile-nav" class="sidenav-trigger"><i class="material-icons">menu</i></a>
             <ul class="right hide-on-med-and-down">
                 <li><a href="/">Home</a></li>
-                <li><a href="/ai">Play AI</a></li>
+                <li><a href="/study">Study</a></li>
                 {% if user.is_authenticated %}
+                    <li><a href="/ai">Play AI</a></li>
                     <li><a href="/challenges">Challenges</a></li>
                     <li><a href="/active">Active Games</a></li>
                     <li><a href="/account">{{user.username}}</a></li>
@@ -25,8 +26,9 @@
 
 <ul class="sidenav" id="mobile-nav">
     <li><a href="/">Home</a></li>
-    <li><a href="/ai">Play AI</a></li>
+    <li><a href="/study">Study</a></li>
     {% if user.is_authenticated %}
+        <li><a href="/ai">Play AI</a></li>
         <li><a href="/challenges">Challenges</a></li>
         <li><a href="/active">Active Games</a></li>
         <li><a href="/account">{{user.username}}</a></li>

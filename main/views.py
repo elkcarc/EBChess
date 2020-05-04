@@ -212,6 +212,11 @@ def ai_request(request):
                   context={"ai": ai,
                            "noaifound" : noaifound})
                   
+def study_request(request):
+    return render(request=request,
+                  template_name="main/study.html",
+                  context={})
+
 def single_slug(request, single_slug):
     for g in Game.objects.all():
         if str(g.pk) == str(single_slug):
