@@ -42,8 +42,8 @@
             $fen.html(checkinit.fen)
             $pgn.html(checkinit.pgn)
             updateStatus()
-            return
-        }
+            return 
+        } 
 
         console.log("message", e)
         var servermove = JSON.parse(e.data)
