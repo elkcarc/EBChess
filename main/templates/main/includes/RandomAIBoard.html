@@ -26,6 +26,9 @@
 
     var board = null
     var game = new Chess()
+    var $status = $('#status')
+    var $fen = $('#fen')
+    var $pgn = $('#pgn')
     var promo = 'q'
     var side = Math.floor(Math.random() * 2)
 
@@ -44,6 +47,8 @@
     var randomIdx = Math.floor(Math.random() * possibleMoves.length)
     game.move(possibleMoves[randomIdx])
     board.position(game.fen())
+    
+    updateStatus ()
     }
 
     function onDrop (source, target) {
@@ -54,6 +59,7 @@
         promotion: promo 
     })
 
+    updateStatus ()
     // illegal move
     if (move === null) return 'snapback'
 
@@ -65,6 +71,42 @@
     // for castling, en passant, pawn promotion
     function onSnapEnd () {
     board.position(game.fen())
+    }
+
+    function updateStatus () {
+        var status = ''
+        var sendEndState = false
+
+        var moveColor = 'White'
+        if (game.turn() === 'b') {
+            moveColor = 'Black'
+        }
+
+        // checkmate?
+        if (game.in_checkmate()) {
+            status = 'Game over, ' + moveColor + ' is in checkmate.'
+            sendEndState = true
+        }
+
+        // draw?
+        else if (game.in_draw()) {
+            status = 'Game over, drawn position'
+            sendEndState = true
+        }
+
+        // game still on
+        else {
+            status = moveColor + ' to move'
+
+            // check?
+            if (game.in_check()) {
+            status += ', ' + moveColor + ' is in check'
+            }
+        }
+
+        $status.html(status)
+        $fen.html(game.fen())
+        $pgn.html(game.pgn())
     }
 
     var config = {
