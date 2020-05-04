@@ -2,45 +2,7 @@
 
 
 {% block content %}
-    <div class="col">
-        <div class="card green">
-            <div class="card-content white-text">
-                <span class="card-title"><strong>Active AI Games</strong></span>
-            </div>
-        </div>
-        {% for challenge in challenges %}
-            <div class="col s12 m6">
-                <a href="../{{challenge.challenge_id}}"> <!--on completion create game -->
-                    <div class="card hoverable green lighten-3">
-                        <div class="card-content black-text">
-                            <span class="card-title"> {{challenge.challenge_user1}} vs. {{challenge.challenge_user2}}</span>
-                            <p>{{challenge.challenge_issued}}</p>
-                            <br>
-                            <p>{{challenge.challenge_message|safe}}</p>
-                        </div>
-                    </div>
-                </a>
-            </div>
-        {% endfor %}
-        <div class="card green lighten-3">
-            <div class="card-content black-text">
-                <span class="card-title"> There is no way to play the AI now</span>
-                <p> :( </p>
-            </div>
-        </div>
-    </div>
 
-    <div class="fixed-action-btn">
-    <a href="/">
-        <div class="btn-floating btn-large green">
-            <i class="large material-icons">add</i>
-        </div>
-    </a>
-    </div>
-    <script>
-        $(document).ready(function(){
-            $('.fixed-action-btn').floatingActionButton();
-        });
-    </script>
-
-{% endblock %}s
+    {% include "main/includes/RandomAIBoard.html" %}
+    
+{% endblock %}

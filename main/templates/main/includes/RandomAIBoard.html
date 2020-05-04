@@ -1,0 +1,114 @@
+<div class="row">
+    <div class="col s12 m6 offset-m3">
+        <div id="myBoard" style="width: 100%"></div>
+        <button id="flipOrientationBtn">Flip</button>
+        <br>
+        <label>Promotion Select:</label>
+        <div id="Promotion Select:"></div>
+        <button id="qPromotionBtn">Queen</button>
+        <button id="rPromotionBtn">Rook</button>
+        <button id="bPromotionBtn">Bishop</button>
+        <button id="nPromotionBtn">Knight</button>
+        <br>
+        <label>Status:</label>
+        <div id="status"></div>
+        <label>FEN:</label>
+        <div id="fen"></div>
+        <label>PGN:</label>
+        <div id="pgn"></div>
+    </div>
+</div>
+
+
+<script>
+    // Uses the chess.js library:
+    // https://github.com/jhlywa/chess.js
+
+    var board = null
+    var game = new Chess()
+    var promo = 'q'
+    var side = Math.floor(Math.random() * 2)
+
+    function onDragStart (source, piece, position, orientation) {
+    if (game.game_over()) return false
+    if ((side === 0 && piece.search(/^b/) !== -1) || (side === 1 && piece.search(/^w/) !== -1)) {
+            return false
+        }
+    }
+
+    function makeRandomMove () {
+    var possibleMoves = game.moves()
+    // game over
+    if (possibleMoves.length === 0) return
+
+    var randomIdx = Math.floor(Math.random() * possibleMoves.length)
+    game.move(possibleMoves[randomIdx])
+    board.position(game.fen())
+    }
+
+    function onDrop (source, target) {
+    // see if the move is legal
+    var move = game.move({
+        from: source,
+        to: target,
+        promotion: promo 
+    })
+
+    // illegal move
+    if (move === null) return 'snapback'
+
+    // make random legal move
+    window.setTimeout(makeRandomMove, 250)
+    }
+
+    // update the board position after the piece snap
+    // for castling, en passant, pawn promotion
+    function onSnapEnd () {
+    board.position(game.fen())
+    }
+
+    var config = {
+    draggable: true,
+    position: 'start',
+    onDragStart: onDragStart,
+    onDrop: onDrop,
+    onSnapEnd: onSnapEnd
+    }
+    board = Chessboard('myBoard', config)
+    if (side === 1)
+    {  
+        board.orientation('black')
+        window.setTimeout(makeRandomMove, 250)
+    }
+
+    $(window).resize(board.resize)
+    $('#showOrientationBtn').on('click', function () {
+        console.log('Board orientation is: ' + board.orientation())
+    })
+
+    $('#flipOrientationBtn').on('click', board.flip)
+
+    $('#whiteOrientationBtn').on('click', function () {
+        board.orientation('white')
+    })
+
+    $('#blackOrientationBtn').on('click', function () {
+        board.orientation('black')
+    })
+    $('#qPromotionBtn').on('click', function () {
+        console.log('Promotion type is q')
+        promo = 'q'
+    })
+    $('#rPromotionBtn').on('click', function () {
+        console.log('Promotion type is r')
+        promo = 'r'
+    })
+    $('#bPromotionBtn').on('click', function () {
+        console.log('Promotion type is b')
+        promo = 'b'
+    })
+    $('#nPromotionBtn').on('click', function () {
+        console.log('Promotion type is n')
+        promo = 'n'
+    })
+</script>
