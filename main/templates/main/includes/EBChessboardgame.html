@@ -21,6 +21,36 @@
 
 
 <script>
+    //websocket communications
+    var loc = window.location
+    var wsStart = 'ws://'
+    if(loc.protocol == 'https:'){
+        wsStart = 'wss//'
+    } 
+    var endpoint = wsStart + loc.host + loc.pathname
+    var socket = new WebSocket(endpoint)
+
+    socket.onmessage = function(e){
+        checkinit = JSON.parse(e.data)
+        if (checkinit.type === "init_message")
+        {
+            board.position(checkinit.fen)
+            game.load_pgn(checkinit.pgn)
+            $fen.html(checkinit.fen)
+            $pgn.html(checkinit.pgn)
+            updateStatus()
+            return 
+        } 
+        console.log("message", e)
+        socket.close()
+    }
+
+    socket.onerror = function(e){
+        console.log("error", e)
+    }
+    socket.onclose = function(e){
+        console.log("close", e)
+    }
 
     var board = null
     var game = new Chess()
@@ -30,23 +60,33 @@
     var localsource
     var localtarget
     var promo = 'q'
+
     function onDragStart (source, piece, position, orientation) {
         if (game.game_over()) return false
+        
         if ((game.turn() === 'w' && piece.search(/^b/) !== -1) || (game.turn() === 'b' && piece.search(/^w/) !== -1)) {
             return false
         }
+
     }
 
     function onDrop (source, target) {
-    var move = game.move({
-        from: source,
-        to: target,
-        promotion: promo
-    })
-    if (move === null) return 'snapback'
-    updateStatus()
+        var move = game.move({
+            from: source,
+            to: target,
+            promotion: promo
+        })
+
+        board.position(game.fen())
+
+        // illegal move
+        if (move === null) return 'snapback'
+
+        updateStatus()
     }
 
+    // update the board position after the piece snap
+    // for castling, en passant, pawn promotion
     function onSnapEnd () {
         board.position(game.fen())
     }
@@ -60,25 +100,37 @@
             moveColor = 'Black'
         }
 
+        // checkmate?
         if (game.in_checkmate()) {
             status = 'Game over, ' + moveColor + ' is in checkmate.'
             sendEndState = true
         }
 
+        // draw?
         else if (game.in_draw()) {
             status = 'Game over, drawn position'
             sendEndState = true
         }
 
+        // game still on
         else {
             status = moveColor + ' to move'
+
+            // check?
             if (game.in_check()) {
             status += ', ' + moveColor + ' is in check'
             }
         }
+
         $status.html(status)
         $fen.html(game.fen())
         $pgn.html(game.pgn())
+
+        if (sendEndState){
+            var gameupdate = {pgn:game.pgn(), fen:game.fen(), status:status, moveColor:moveColor, promotion: promo}
+            console.log("sending end state", gameupdate)
+            socket.send(JSON.stringify(gameupdate))
+        }
     }
 
     var config = {
@@ -90,8 +142,19 @@
     }
     board = Chessboard('myBoard', config)
     $(window).resize(board.resize)
+    $('#showOrientationBtn').on('click', function () {
+        console.log('Board orientation is: ' + board.orientation())
+    })
 
     $('#flipOrientationBtn').on('click', board.flip)
+
+    $('#whiteOrientationBtn').on('click', function () {
+        board.orientation('white')
+    })
+
+    $('#blackOrientationBtn').on('click', function () {
+        board.orientation('black')
+    })
 
     $('#qPromotionBtn').on('click', function () {
         console.log('Promotion type is q')
@@ -109,4 +172,7 @@
         console.log('Promotion type is n')
         promo = 'n'
     })
+
+
+
 </script>
