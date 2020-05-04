@@ -1,0 +1,100 @@
+<div class="row">
+    <div class="col s12 m6 offset-m3">
+        <div id="myBoard" style="width: 100%"></div>
+        <button id="flipOrientationBtn">Flip</button>
+        <br>
+        <label>Status:</label>
+        <div id="status"></div>
+        <label>FEN:</label>
+        <div id="fen"></div>
+        <label>PGN:</label>
+        <div id="pgn"></div>
+    </div>
+</div>
+
+
+<script>
+
+    var board = null
+    var game = new Chess()
+    var $status = $('#status')
+    var $fen = $('#fen')
+    var $pgn = $('#pgn')
+    var localsource
+    var localtarget
+
+    function onDragStart (source, piece, position, orientation) {
+        if (game.game_over()) return false
+        if ((game.turn() === 'w' && piece.search(/^b/) !== -1) || (game.turn() === 'b' && piece.search(/^w/) !== -1)) {
+            return false
+        }
+    }
+
+    function onDrop (source, target) {
+    var move = game.move({
+        from: source,
+        to: target,
+        promotion: 'q'
+    })
+    if (move === null) return 'snapback'
+    updateStatus()
+    }
+
+    function onSnapEnd () {
+        board.position(game.fen())
+    }
+
+    function updateStatus () {
+        var status = ''
+        var sendEndState = false
+
+        var moveColor = 'White'
+        if (game.turn() === 'b') {
+            moveColor = 'Black'
+        }
+
+        if (game.in_checkmate()) {
+            status = 'Game over, ' + moveColor + ' is in checkmate.'
+            sendEndState = true
+        }
+
+        else if (game.in_draw()) {
+            status = 'Game over, drawn position'
+            sendEndState = true
+        }
+
+        else {
+            status = moveColor + ' to move'
+            if (game.in_check()) {
+            status += ', ' + moveColor + ' is in check'
+            }
+        }
+        $status.html(status)
+        $fen.html(game.fen())
+        $pgn.html(game.pgn())
+    }
+
+    var config = {
+        draggable: true,
+        position: 'start',
+        onDragStart: onDragStart,
+        onDrop: onDrop,
+        onSnapEnd: onSnapEnd
+    }
+    board = Chessboard('myBoard', config)
+    $(window).resize(board.resize)
+    $('#showOrientationBtn').on('click', function () {
+        console.log('Board orientation is: ' + board.orientation())
+    })
+
+    $('#flipOrientationBtn').on('click', board.flip)
+
+    $('#whiteOrientationBtn').on('click', function () {
+        board.orientation('white')
+    })
+
+    $('#blackOrientationBtn').on('click', function () {
+        board.orientation('black')
+    })
+    
+</script>

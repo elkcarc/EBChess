@@ -217,6 +217,11 @@ def study_request(request):
                   template_name="main/study.html",
                   context={})
 
+def local_request(request):
+    return render(request=request,
+                  template_name="main/local.html",
+                  context={})
+
 def single_slug(request, single_slug):
     for g in Game.objects.all():
         if str(g.pk) == str(single_slug):

@@ -33,5 +33,6 @@ urlpatterns = [
     path("active/<active_slug>/", views.active_slug, name="active_slug"),
     path("ai/", views.ai_request, name="ai"),
     path("study/", views.study_request, name="study"),
+    path("local/", views.local_request, name="local"),
     path("game/<single_slug>/", views.single_slug, name="single_slug"),
 ]
