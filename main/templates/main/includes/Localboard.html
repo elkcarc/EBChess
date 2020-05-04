@@ -2,6 +2,10 @@
     <div class="col s12 m6 offset-m3">
         <div id="myBoard" style="width: 100%"></div>
         <button id="flipOrientationBtn">Flip</button>
+        <button id="qPromotionBtn">Queen</button>
+        <button id="rPromotionBtn">Rook</button>
+        <button id="bPromotionBtn">Bishop</button>
+        <button id="nPromotionBtn">Knight</button>
         <br>
         <label>Status:</label>
         <div id="status"></div>
@@ -22,7 +26,7 @@
     var $pgn = $('#pgn')
     var localsource
     var localtarget
-
+    var promo = 'q'
     function onDragStart (source, piece, position, orientation) {
         if (game.game_over()) return false
         if ((game.turn() === 'w' && piece.search(/^b/) !== -1) || (game.turn() === 'b' && piece.search(/^w/) !== -1)) {
@@ -34,7 +38,7 @@
     var move = game.move({
         from: source,
         to: target,
-        promotion: 'q'
+        promotion: promo
     })
     if (move === null) return 'snapback'
     updateStatus()
@@ -96,5 +100,20 @@
     $('#blackOrientationBtn').on('click', function () {
         board.orientation('black')
     })
-    
+    $('#qPromotionBtn').on('click', function () {
+        console.log('Promotion type is q')
+        promo = 'q'
+    })
+    $('#rPromotionBtn').on('click', function () {
+        console.log('Promotion type is r')
+        promo = 'r'
+    })
+    $('#bPromotionBtn').on('click', function () {
+        console.log('Promotion type is b')
+        promo = 'b'
+    })
+    $('#nPromotionBtn').on('click', function () {
+        console.log('Promotion type is n')
+        promo = 'n'
+    })
 </script>

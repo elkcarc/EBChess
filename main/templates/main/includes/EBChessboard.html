@@ -2,6 +2,10 @@
     <div class="col s12 m6 offset-m3">
         <div id="myBoard" style="width: 100%"></div>
         <button id="flipOrientationBtn">Flip</button>
+        <button id="qPromotionBtn">Queen</button>
+        <button id="rPromotionBtn">Rook</button>
+        <button id="bPromotionBtn">Bishop</button>
+        <button id="nPromotionBtn">Knight</button>
         <br>
         <label>Status:</label>
         <div id="status"></div>
@@ -42,7 +46,7 @@
         var move = game.move({
             from: servermove.movesource,
             to: servermove.movetarget,
-            promotion: 'q' // NOTE: always promote to a queen for now
+            promotion: servermove.promotion
         })
 
         board.position(game.fen())
@@ -67,6 +71,7 @@
     var $pgn = $('#pgn')
     var localsource
     var localtarget
+    var promo = 'q'
 
     function onDragStart (source, piece, position, orientation) {
         // do not pick up pieces if the game is over
@@ -89,7 +94,7 @@
     function onDrop (source, target) {
         localsource = source
         localtarget = target
-        var gameupdate = {pgn:game.pgn(), fen:game.fen(), movesource:localsource, movetarget:localtarget}
+        var gameupdate = {pgn:game.pgn(), fen:game.fen(), movesource:localsource, movetarget:localtarget, promotion: promo}
         console.log("sending move", gameupdate)
         socket.send(JSON.stringify(gameupdate))
     }
@@ -136,7 +141,7 @@
         $pgn.html(game.pgn())
 
         if (sendEndState){
-            var gameupdate = {pgn:game.pgn(), fen:game.fen(), status:status, moveColor:moveColor}
+            var gameupdate = {pgn:game.pgn(), fen:game.fen(), status:status, moveColor:moveColor, promotion: promo}
             console.log("sending end state", gameupdate)
             socket.send(JSON.stringify(gameupdate))
         }
@@ -164,7 +169,23 @@
     $('#blackOrientationBtn').on('click', function () {
         board.orientation('black')
     })
-    
+
+    $('#qPromotionBtn').on('click', function () {
+        console.log('Promotion type is q')
+        promo = 'q'
+    })
+    $('#rPromotionBtn').on('click', function () {
+        console.log('Promotion type is r')
+        promo = 'r'
+    })
+    $('#bPromotionBtn').on('click', function () {
+        console.log('Promotion type is b')
+        promo = 'b'
+    })
+    $('#nPromotionBtn').on('click', function () {
+        console.log('Promotion type is n')
+        promo = 'n'
+    })
 
 
 

@@ -15,31 +15,11 @@
     var board = null
     var game = new Chess()
 
-    function onMoveEnd () {
-    updateStatus()
-    board.position(game.fen())
-    }
-
-    function updateStatus () {
-    var status = ''
-
-    if (game.in_checkmate()) {
-        status = 'Game over, ' + moveColor + ' is in checkmate.'
-    }
-
-    else if (game.in_draw()) {
-        status = 'Game over, drawn position'
-    }
-
-    }
-
     var config = {
     draggable: true,
     position: 'start',
     dropOffBoard: 'trash',
     sparePieces: true,
-    onMoveEnd: onMoveEnd
-
     }
     board = Chessboard('myBoard', config)
 

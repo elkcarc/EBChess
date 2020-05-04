@@ -101,6 +101,7 @@ class ChessBoardConsumer(AsyncWebsocketConsumer):
                         'pgn': board_obj.game_content,
                         'movesource': gameupdate_json["movesource"],
                         'movetarget': gameupdate_json["movetarget"],
+                        'promotion': gameupdate_json["promotion"],
                     }   
                 )
             if gametype == "active":
@@ -112,6 +113,7 @@ class ChessBoardConsumer(AsyncWebsocketConsumer):
                         'pgn': board_obj.active_content,
                         'movesource': gameupdate_json["movesource"],
                         'movetarget': gameupdate_json["movetarget"],
+                        'promotion': gameupdate_json["promotion"],
                     }   
                 )
                 self.update_active(gameupdate_json)
