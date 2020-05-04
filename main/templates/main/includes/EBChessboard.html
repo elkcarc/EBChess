@@ -39,6 +39,9 @@
         {
             board.position(checkinit.fen)
             game.load_pgn(checkinit.pgn)
+            $fen.html(checkinit.fen)
+            $pgn.html(checkinit.pgn)
+            updateStatus()
             return
         }
 
