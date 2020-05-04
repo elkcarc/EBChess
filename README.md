@@ -5,3 +5,4 @@ Django channels based web chess application
 
 implements chessboard.js and chess.js
 
+can be used with aws elastic beanstalk and elasticache for redis
