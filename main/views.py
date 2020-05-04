@@ -6,6 +6,7 @@ from django.contrib import messages
 from .forms import NewUserForm, ChallengeForm
 from django.http import HttpResponse
 from datetime import datetime
+from django.contrib.auth.models import User
 import numpy as np
 
 
@@ -32,12 +33,12 @@ def register(request):
             return redirect("main:homepage")
         else:
             for msg in form.error_messages:
-                messages.error(request, f"{msg} : {form.error_messages[msg]}")
-                
+                messages.error(request, "Error Creating User")              
     form = NewUserForm
     return render(request=request,
                   template_name="main/register.html",
                   context={"form":form})
+
 
 def logout_request(request):
     logout(request)
