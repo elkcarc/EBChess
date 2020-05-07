@@ -74,6 +74,7 @@ def account_request(request):
     nogamesfound = True
     if len(games) > 1:
         nogamesfound = False
+    games = reversed(games)
     return render(request=request,
                   template_name="main/account.html",
                   context={"games": games,
